@@ -1,0 +1,6 @@
+---
+title: K8s-ldap-auth Helm Chart
+description: K8s-ldap-auth Helm Repository
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+  - jekyll-remote-theme
