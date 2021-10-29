@@ -1,7 +1,7 @@
 ---
 apiVersion: v2
 name: k8s-ldap-auth
-version: 0.1.1
+version: 0.1.2
 description: Kubernetes webhook token authentication plugin implementation using ldap.
 keywords:
   - kubernetes
@@ -14,4 +14,4 @@ maintainers:
   - name: Vianney Bouchaud
     url: https://vianney.bouchaud.org
 type: application
-appVersion: "v3.1.0"
+appVersion: "v3.2.0"
