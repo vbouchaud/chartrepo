@@ -10,7 +10,54 @@ This chart **only** install `k8s-ldap-auth`. You need to have access to an alrea
 
 ```console
 $ helm repo add vbouchaud https://vbouchaud.github.io/chartrepo/
-$ helm install k8s-ldap-auth vbouchaud/k8s-ldap-auth
+
+# generating private and public key for JWT signing
+$ openssl genrsa -out key.pem 4096
+$ openssl rsa -in key.pem -outform PEM -pubout -out public.pem
+
+# fetching the default values.yml for further editions
+$ helm show values vbouchaud/k8s-ldap-auth > values.yml
+```
+
+```yaml
+ingress:
+  enabled: true
+  className: traefik
+  hosts:
+    - host: app.valhall.local
+      paths:
+        - path: /cluster/ldap
+
+config:
+  ldap:
+    address: ldaps://ldap.valhall.local
+    bindDn: uid=k8s-ldap-auth,ou=services,ou=valhall,o=local
+    bindPassword: P@ssw0rd
+    user:
+      searchBase: ou=people,ou=valhall,o=local
+      searchFilter: (uid=%s)
+  keys:
+    # insert here the private key you generated previously
+    privateKeyData: |-
+      -----BEGIN PRIVATE KEY-----
+      MIIJQQIBADANBgkqhkiG9w0BAQEFAASCCSswggknAgEAAoICAQDU4WQez1ww4llv
+      # ...
+      9QJeAv5SSy/Tuj9vkaI+1cdrnNagkJLKY1BFOYi0WXuq1rsUvxQvIStxtcewYF2a
+      hfnkt+Md2qZtLxjOFYN51Y3lVk3e
+      -----END PRIVATE KEY-----
+      
+    # insert here the public key you generated previously
+    publicKeyData: |-
+      -----BEGIN PUBLIC KEY-----
+      MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1OFkHs9cMOJZb/p9VgoZ
+      # ...
+      neybKNLe7Ftz6ZMC1aFRjROgDD8wbfDoz9KpYHwT4HqgmMFLqUKx1BCEFKls1hT5
+      UKJaCLzmZMb3pMl63/8WfoUCAwEAAQ==
+      -----END PUBLIC KEY-----
+```
+
+```console
+$ helm install k8s-ldap-auth vbouchaud/k8s-ldap-auth --values values.yml 
 ```
 
 ## Getting Started
