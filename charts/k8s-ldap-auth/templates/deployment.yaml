@@ -33,11 +33,8 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - /bin/sh
           args:
-            - -c
-            - k8s-ldap-auth serve
+            - serve
           env:
             - name: HOST
               value: "0.0.0.0"
